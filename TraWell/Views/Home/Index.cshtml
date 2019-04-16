@@ -1,31 +1,74 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
+@section Scripts {
+    @Scripts.Render("~/scripts/main-page.js")
+    @Scripts.Render("~/scripts/jquery-1.10.2.min.js")
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
+    @Scripts.Render("~/scripts/bootstrap-select.min.js")
+    
+    @Scripts.Render("~/scripts/bootstrap-datepicker.min.js")
+   
+}
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+@Styles.Render("~/Content/datepicker.css")
+@Styles.Render("~/Content/bootstrap-select.min.css")
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+<div class="main-content">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="field">Количество взрослых: <input class="form-control adults-amount" type="number" min="1" max="6" value="1" /></label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="field">Количество детей: <input class="form-control children-amount" type="number" min="1" max="6" value="1" /></label>
+            </div>
+        </div>
+        <br>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="field">Желаемый период отъезда:</label>
+                <input type="text" class="form-control" value="" id="dpd1" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="field"> </label>
+                <input type="text" class="form-control" value="" id="dpd2" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="field">Дней в путешествии:</label>
+                <input type="text" class="form-control" value="" id="total-days-of-voyage" />
+            </div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+
+    <div class="row"> 
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="field">Город отправления: </label>
+                <input id="departure-city" class="form-control" data-live-search="true">
+            </div>
+        </div>
     </div>
+
+    <div class="row" id="fields-of-fields">
+        <div class="col-md-3">
+            <div class="form-group">
+                <div class="point-fields">
+                    <label class="field">
+                        Выбрать город: <select id="city-picker" data-live-search="true"></select>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="button" id="add-point-button" value="Добавить пункт назанчения" />
 </div>
