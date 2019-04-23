@@ -64,7 +64,7 @@
                 let dates = $('#general-dates').clone(false);
                 dates.attr('id', null);
                 dates.addClass('field');
-                dates.find('.days-in').attr('id', null);
+                dates.find('.days-in').attr('id', null).val("").closest('div').find('label').text("Дней в городе");
                 dates.find(".general-date").each(function () {
                     $(this).attr('id', null).datepicker({
                         format: 'dd-mm-yyyy',
@@ -147,7 +147,7 @@
 
                     let transportType = $('<select class="transport-type-select form-control"></select>');
                     let count = 1;
-                    ['Самолет', 'Поезд', 'Автобус', 'Корабль', 'Космический корабль', 'Телепорт', 'Червоточина'].forEach(function (v) {                    
+                    ['Самолет', 'Поезд', 'Автобус', 'Корабль', 'Космический корабль', 'Телепорт', 'Червоточина'].forEach(function (v) {
                         $(`<option value=${count}>${v}</option>`).appendTo(transportType);
                         count++;
                     });
@@ -160,33 +160,37 @@
 
                     let transportClass = $('<select class="transport-class-select form-control"></select>');
                     count = 1;
-                    ['Эконом', 'Бизнес', 'Люкс'].forEach(function (v) {                    
+                    ['Эконом', 'Бизнес', 'Люкс'].forEach(function (v) {
                         $(`<option value=${count}>${v}</option>`).appendTo(transportClass);
                         count++;
                     });
                     let transportClassLabel = $('<label>Класс: </label>');
                     transportClass.appendTo(transportClassLabel);
                     transportClassLabel.appendTo(transportFields);
-                    
+
                     transportFields.insertBefore(pointHr);
                 }, 500);
 
-               
+
             }
         })
+    }).on('click', '#book-button', function () {
+        $(this).replaceWith($('<button type="button" class="btn btn-dark btn-lg" id="buy-button">Выкупить</button>'));
+    }).on('click', '#buy-button', function () {
+        alert("a");
     });
 
     $("#add-point-button").on('click', function () {
-        let a = $('<div class="point-fields"></div>');
-        let b = $('<label class="field city-label">Выбрать город: </label>');
-        let c = $('#city-picker').clone();
-        c.attr("id", null);
-        c.val("1");
-        c.appendTo(b);
-        b.appendTo(a);
-        $('<hr>').appendTo(a);
-        a.appendTo('#fields-of-fields');
-        c.selectpicker('refresh');
+        let pointFields = $('<div class="point-fields"></div>');
+        let label = $('<label class="field city-label">Выбрать город: </label>');
+        let citypicker = $('#city-picker').clone();
+        citypicker.attr("id", null);
+        citypicker.val("0");
+        citypicker.appendTo(label);
+        label.appendTo(pointFields);
+        $('<hr>').appendTo(pointFields);
+        pointFields.appendTo('#fields-of-fields');
+        citypicker.selectpicker('refresh');
     });
 
     $("#get-route-button").on('click', function () {
@@ -232,6 +236,34 @@
 
             preRoute["points"].push(point);
         });
-        alert(JSON.stringify(preRoute));
+
+        //alert(JSON.stringify(preRoute));
+
+        $.ajax({
+            url: "/home/routing/",
+            type: 'post',
+            contentType: "json",
+            dataType: "json",
+            data: JSON.stringify(preRoute),
+            success: function (data) {
+                let route = JSON.parse(data);
+                let routesDiv = $('#routes');
+                $(`<hr><h2>Ваш маршрут</h2>`).appendTo(routesDiv);
+
+                route.forEach(function (point) {
+                    let pointDiv = $('<div class="route-point"></div>');
+                    $(`<hr>`).appendTo(pointDiv);
+                    $(`<h3>${point["cityName"]}</h3>`).appendTo(pointDiv);
+
+                    //TODO: Таблицы с транспортом и отелями
+        
+                    pointDiv.appendTo(routesDiv);
+                });
+
+                $(`<hr><button type="button" class="btn btn-dark btn-lg" id="book-button">Забронировать</button>`).appendTo(routesDiv);
+            }
+        });
     });
+
+
 })

@@ -56,5 +56,16 @@ namespace TraWell.Controllers
             s = s.Substring(1, s.Length - 2);
             return Json(s, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult Routing()
+        {
+            Stream req = Request.InputStream;
+            req.Seek(0, System.IO.SeekOrigin.Begin);
+            string json = new StreamReader(req).ReadToEnd();
+            var s = Requester.SendPOST("http://localhost:4044/api/routes/", json);
+            s = s.Replace("\\", "");
+            s = s.Substring(1, s.Length - 2);
+            return Json(s, JsonRequestBehavior.AllowGet);
+        }
     }
 }
