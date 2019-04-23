@@ -6,11 +6,12 @@
     @Scripts.Render("~/scripts/jquery-1.10.2.min.js")
     @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
     @Scripts.Render("~/scripts/bootstrap-select.min.js")
-    
+    @Scripts.Render("~/scripts/jquery.rateit.min.js")
     @Scripts.Render("~/scripts/bootstrap-datepicker.min.js")
    
 }
 
+@Styles.Render("~/Content/rateit.css")
 @Styles.Render("~/Content/datepicker.css")
 @Styles.Render("~/Content/bootstrap-select.min.css")
 
@@ -18,34 +19,34 @@
     <div class="row">
         <div class="col-md-3">
             <div class="form-group">
-                <label class="field">Количество взрослых: <input class="form-control adults-amount" type="number" min="1" max="6" value="1" /></label>
+                <label>Количество взрослых: <input class="form-control" id="adults-amount" type="number" min="1" max="6" value="1" /></label>
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label class="field">Количество детей: <input class="form-control children-amount" type="number" min="1" max="6" value="1" /></label>
+                <label>Количество детей: <input class="form-control" id="children-amount" type="number" min="0" max="6" value="0" /></label>
             </div>
         </div>
         <br>
     </div>
     
-    <div class="row">
+    <div class="row dates" id="general-dates">
         <div class="col-md-3">
             <div class="form-group">
-                <label class="field">Желаемый период отъезда:</label>
-                <input type="text" class="form-control" value="" id="dpd1" />
+                <label>С:</label>
+                <input type="text" class="form-control first-date general-date" value="" id="general-departure-day" />
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label class="field"> </label>
-                <input type="text" class="form-control" value="" id="dpd2" />
+                <label>До:</label>
+                <input type="text" class="form-control second-date general-date" value="" id="general-arrival-day" />
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label class="field">Дней в путешествии:</label>
-                <input type="text" class="form-control" value="" id="total-days-of-voyage" />
+                <label>Дней в путешествии:</label>
+                <input type="text" class="form-control days-in" value="" id="total-days-of-voyage" />
             </div>
         </div>
     </div>
@@ -53,22 +54,22 @@
     <div class="row"> 
         <div class="col-md-3">
             <div class="form-group">
-                <label class="field">Город отправления: </label>
+                <label>Город отправления: </label>
                 <input id="departure-city" class="form-control" data-live-search="true">
             </div>
         </div>
     </div>
 
-    <div class="row" id="fields-of-fields">
-        <div class="col-md-3">
-            <div class="form-group">
-                <div class="point-fields">
-                    <label class="field">
-                        Выбрать город: <select id="city-picker" data-live-search="true"></select>
-                    </label>
-                </div>
-            </div>
-        </div>
+    <div id="fields-of-fields">
+        <hr>
+        <div class="point-fields">
+            <label class="field city-label">
+                Выбрать город: <select id="city-picker" class="city" data-live-search="true"></select>
+            </label>
+            <hr>
+        </div>    
     </div>
-    <input type="button" id="add-point-button" value="Добавить пункт назанчения" />
+    <button type="button" class="btn btn-dark" id="add-point-button">Добавить пункт назанчения</button>
+    <hr>
+    <button type="button" class="btn btn-dark btn-lg" id="get-route-button">Составить маршрут</button>
 </div>
