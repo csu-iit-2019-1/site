@@ -170,11 +170,10 @@
 
                     transportFields.insertBefore(pointHr);
                 }, 500);
-
-
             }
         })
     }).on('click', '#book-button', function () {
+        $('#modalWindow').modal('show');
         $(this).replaceWith($('<button type="button" class="btn btn-dark btn-lg" id="buy-button">Выкупить</button>'));
     }).on('click', '#buy-button', function () {
         alert("a");
@@ -265,5 +264,7 @@
         });
     });
 
+    $("#modalWindow").off('hidden.bs.modal').on('hidden.bs.modal', function () {
 
+    });
 })
