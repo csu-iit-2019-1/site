@@ -252,10 +252,7 @@
                 route.forEach(function (point) {
                     let pointDiv = $('<div class="route-point"></div>');
                     $(`<hr>`).appendTo(pointDiv);
-                    $(`<h3>${point["cityName"]}</h3>`).appendTo(pointDiv);
-
-                    //TODO: Таблицы с транспортом и отелями
-        
+                    $(`<h3>${point["cityName"]}</h3>`).appendTo(pointDiv);        
                     pointDiv.appendTo(routesDiv);
                 });
 
