@@ -252,7 +252,75 @@
                 route.forEach(function (point) {
                     let pointDiv = $('<div class="route-point"></div>');
                     $(`<hr>`).appendTo(pointDiv);
-                    $(`<h3>${point["cityName"]}</h3>`).appendTo(pointDiv);        
+                    $(`<h3>${point["cityName"]}</h3>`).appendTo(pointDiv);
+
+                    //TODO: Таблицы с транспортом и отелями
+                    //hotel
+                    //загружаем отели
+                    cityId = 2 //as example
+                    $.ajax({
+                        url: "/home/hotels/cities/" + cityId,
+                        type: 'get',
+                        contentType: "json",
+                        dataType: "json",
+                        success: function (hotelssData) {
+                            let hotels = JSON.parse(hotelsData);
+                            let table = $('<table class="table"></table>');
+                            let head = $('<thead><tr><th>Название</th><th>Адрес</th><th>Цена</th><th>Количество звезд</th><th>Описание</th><th>Выбрать это</th></tr></thead>');
+                            head.appendTo(table);
+
+                            let body = $('<tbody></tbody>');
+                            hotels.forEach(function (hotel) {
+                                let row = $('<tr></tr>');
+                                ['name', 'city', 'price', 'raiting', 'description'].forEach(function (key) {
+                                    let td = $(`<td>${hotel[key]}</td>`);
+                                    td.appendTo(row);
+                                });
+
+                                let checkbox = $('<input class="event-checkbox" type="checkbox">');
+                                checkbox.appendTo(row);
+
+                                let hotelId = $(`<td class="event-id" hidden="hidden">${hotel["id"]}</td>`);
+                                hotelId.appendTo(row);
+
+                                row.appendTo(body);
+                            });
+                            body.appendTo(table);
+    
+                        }
+                    });
+                    $.ajax({
+                        url: "/home/transport/get_list",
+                        type: 'post',
+                        contentType: "json",
+                        dataType: "json",
+                        success: function (transportData) {
+                            let transports = JSON.parse(transportData);
+                            let table = $('<table class="table"></table>');
+                            let head = $('<thead><tr><th>Тип</th><th>Название</th><th>Дата прибытия</th><th>Дата отбытия</th><th>Цена</th><th>Выбрать это</th></tr></thead>');
+                            head.appendTo(table);
+
+                            let body = $('<tbody></tbody>');
+                            transports.forEach(function (transport) {
+                                let row = $('<tr></tr>');
+                                ['transportType', 'name', 'departureTime', 'arriveTime', 'price'].forEach(function (key) {
+                                    let td = $(`<td>${transport[key]}</td>`);
+                                    td.appendTo(row);
+                                });
+
+                                let checkbox = $('<input class="event-checkbox" type="checkbox">');
+                                checkbox.appendTo(row);
+
+                                let transportId = $(`<td class="event-id" hidden="hidden">${transport["id"]}</td>`);
+                                transportId.appendTo(row);
+
+                                row.appendTo(body);
+                            });
+                            body.appendTo(table);
+
+                        }
+                    });
+        
                     pointDiv.appendTo(routesDiv);
                 });
 
