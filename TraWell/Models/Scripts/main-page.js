@@ -267,15 +267,16 @@
                     }
                     route = new Route()
                     route1 = new Route()
-                    var points = [route.route1]
+                    var points = [route, route1]
 
 
                     let table_hotels = $('<table class="table"></table>');
                     let head_hotels = $('<thead><tr><th>Название</th><th>Адрес</th><th>Цена</th><th>Количество звезд</th><th>Описание</th><th>Выбрать это</th></tr></thead>');
                     let body_hotels = $('<tbody></tbody>');
                     head_hotels.appendTo(table_hotels);
-                    for (var route in routes) {
-                        hotels = routes[route]['hotels']
+                    for (var route in points) {
+                        hotels = points[route]['hotels']
+                        alert(hotels)
                         hotels.forEach(function (hotel) {
                             let row = $('<tr></tr>');
                             ['name', 'city', 'price', 'raiting', 'description'].forEach(function (key) {
@@ -299,8 +300,8 @@
                     let head_transports = $('<thead><tr><th>Тип</th><th>Название</th><th>Дата прибытия</th><th>Дата отбытия</th><th>Цена</th><th>Выбрать это</th></tr></thead>');
                     let body_transports = $('<tbody></tbody>');
                     head_transports.appendTo(table_transports);
-                    for (var route in routes) {
-                        transports = routes[route]['transports']
+                    for (var route in points) {
+                        transports = points[route]['transport']
                         transports.forEach(function (transport) {
                             let row = $('<tr></tr>');
                             ['transportType', 'name', 'departureTime', 'arriveTime', 'price'].forEach(function (key) {
@@ -318,9 +319,9 @@
                         });
                     }
                     body_transports.appendTo(table_transports);
-                    pointDiv.appendTo(routesDiv);
-                });
 
+                });
+                pointDiv.appendTo(routesDiv);
                 $(`<hr><button type="button" class="btn btn-dark btn-lg" id="book-button">Забронировать</button>`).appendTo(routesDiv);
             }
         });
