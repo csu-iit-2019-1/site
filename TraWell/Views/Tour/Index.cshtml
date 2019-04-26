@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@section Scripts {
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
+    @Scripts.Render("~/scripts/bootstrap-select.min.js")
+    @Scripts.Render("~/scripts/jquery.rateit.min.js")
+    @Scripts.Render("~/scripts/bootstrap-datepicker.min.js")
+
+}
+
+@Styles.Render("~/Content/rateit.css")
+@Styles.Render("~/Content/datepicker.css")
+@Styles.Render("~/Content/bootstrap-select.min.css")
+
+<div class="main-content">
+    @if (ViewBag.siteId)
+    {
+        <h1>@ViewBag.siteId</h1>
+    }
+
+    <button type="button" class="btn btn-dark" id="buy-button">Выкупить</button>
+    <button type="button" class="btn btn-dark" id="unbook-button">Снять бронь</button>
+</div>
