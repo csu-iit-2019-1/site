@@ -68,6 +68,6 @@ namespace TraWell.Controllers
             return Json(s, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult 
+        
     }
 }

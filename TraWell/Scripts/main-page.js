@@ -1,4 +1,7 @@
 ﻿$(function () {
+    let chosenCitiesIds = [];
+    $('#hotel-stars').rateit({ step: 1 });
+
     //--datespickers--
     var nowTemp = new Date();
     var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
@@ -22,15 +25,17 @@
         type: 'get',
         dataType: "json",
         success: function (data) {
-            let $cities = $("#city-picker");
-            let options = $("option", $cities).get();
-            let cities = JSON.parse(data);
-            cities.forEach(city => {
-                if (!options.find(option => +option.value === city.id)) {
-                    $cities.append(`<option value="${city.id}" data-subtext="${city.country}">${city.name}</option>`);
-                }
-            });
-            $cities.selectpicker('refresh');
+            $(".city-picker").each(function () {
+                let $cities = $(this);
+                let options = $("option", $cities).get();
+                let cities = JSON.parse(data);
+                cities.forEach(city => {
+                    if (!options.find(option => +option.value === city.id)) {
+                        $cities.append(`<option value="${city.id}" data-subtext="${city.country}">${city.name}</option>`);
+                    }
+                });
+                $cities.selectpicker('refresh');
+            });       
         }
     });
 
@@ -124,14 +129,6 @@
                     let hotelFields = $('<div class="field"></div>');
                     $('<h2>Параметры отеля</h2>').appendTo(hotelFields);
 
-                    $('<label>Количество звезд:  </label>').appendTo(hotelFields);
-                    let stars = $('<div class="rateit hotel-stars" data-rateit-resetable="false"></div>');
-                    stars.appendTo(hotelFields);
-                    stars.rateit({ step: 1 });
-
-                    let cost = $('<div><label>Стоимость за ночь: <input class="hotel-cost1 form-control" type="number" min=0 value=0><input class="hotel-cost2 form-control" type="number" min=0 value=0></label></div>');
-                    cost.appendTo(hotelFields);
-
                     let breakfastIncluded = $('<div><label>Завтрак: <input class="breakfast-checkbox" type="checkbox"></div>');
                     breakfastIncluded.appendTo(hotelFields);
 
@@ -155,28 +152,34 @@
                     transportType.appendTo(transportTypeLabel);
                     transportTypeLabel.appendTo(transportFields);
 
-                    let transportCost = $('<div><label>Цена: <input class="transport-cost1 form-control" type="number" min=0 value=0><input class="transport-cost2 form-control" type="number" min=0 value=0></label></div>');
-                    transportCost.appendTo(transportFields);
-
                     let transportClass = $('<select class="transport-class-select form-control"></select>');
                     count = 1;
                     ['Эконом', 'Бизнес', 'Люкс'].forEach(function (v) {
                         $(`<option value=${count}>${v}</option>`).appendTo(transportClass);
                         count++;
                     });
-                    let transportClassLabel = $('<label>Класс: </label>');
+                    let transportClassLabel = $('<br><label>Класс: </label>');
                     transportClass.appendTo(transportClassLabel);
                     transportClassLabel.appendTo(transportFields);
 
                     transportFields.insertBefore(pointHr);
-                }, 500);
+                }, 200);
             }
         })
     }).on('click', '#book-button', function () {
-        $('#modalWindow').modal('show');
-        $(this).replaceWith($('<button type="button" class="btn btn-dark btn-lg" id="buy-button">Выкупить</button>'));
-    }).on('click', '#buy-button', function () {
-        alert("a");
+        let saveData = {};
+        saveData["hotels"] = [];
+        saveData["transport"] = []
+        $('input.hotel-checkbox:checked').each(function () {
+            saveData["hotels"].push(+$(this).attr('data-id'));
+        });
+        $('input.transport-checkbox:checked').each(function () {
+            saveData["transport"].push(+$(this).attr('data-id'));
+        });
+
+        localStorage.setItem("points", JSON.stringify(saveData));
+
+        window.location.href = "http://infostorage.pythonanywhere.com/enter-new-data/?returnUrl=http://localhost:24052/tour";
     });
 
     $("#add-point-button").on('click', function () {
@@ -193,6 +196,7 @@
     });
 
     $("#get-route-button").on('click', function () {
+        //TODO: поправить соотвествие между общими и частными параметрами отелей и транспорта
         let preRoute = {};
         preRoute["points"] = [];
 
@@ -203,15 +207,14 @@
         preRoute["generalReturnDate"] = $('#general-arrival-day').val();
         preRoute["totalDaysOfVoyage"] = +$('#total-days-of-voyage').val();
 
-        preRoute["departureCity"] = $('#departure-city').val();
+        preRoute["departureCity"] = +$('#departure-city').val();
 
         $('.point-fields').each(function () {
             let point = {};
 
             point["city"] = +$(this).find('.city').find('select').val();
             point["purpose"] = +$(this).find('.purpose-select').val();
-            point["arrivalDate"] = $(this).find('.first-date').val();
-            point["departureDate"] = $(this).find('.second-date').val();
+            point["datesIn"] = [$(this).find('.first-date').val(), $(this).find('.second-date').val()];
             point["daysIn"] = +$(this).find('.days-in').val();
 
             let events = [];
@@ -245,89 +248,66 @@
             dataType: "json",
             data: JSON.stringify(preRoute),
             success: function (data) {
+                localStorage.setItem("route", data);
                 let route = JSON.parse(data);
                 let routesDiv = $('#routes');
+                routesDiv.children().remove();
                 $(`<hr><h2>Ваш маршрут</h2>`).appendTo(routesDiv);
 
                 route.forEach(function (point) {
+                    chosenCitiesIds.push(point.cityId);
+
                     let pointDiv = $('<div class="route-point"></div>');
                     $(`<hr>`).appendTo(pointDiv);
                     $(`<h3>${point["cityName"]}</h3>`).appendTo(pointDiv);
 
-                    //TODO: Таблицы с транспортом и отелями
-                    //hotel
-                    //загружаем отели
-                    //заглушка маршрутов
-
-                    function Route(name) {
-                        this.cityId = "5";
-                        this.hotels = [{ hotelId: "hotelId", hotelName: "hotelName", address: "address", price: "price", raiting: "raiting", description: "description" }];
-                        this.transport = [{ transportId: "transportId", transportType: "transportType", transportName: "transportName", departureTime: "departureTime", arriveTime: "arriveTime", price: "price" }];
-
-                    }
-                    route = new Route()
-                    route1 = new Route()
-                    var points = [route, route1]
-
-
                     let table_hotels = $('<table class="table"></table>');
-                    let head_hotels = $('<thead><tr><th>Название</th><th>Адрес</th><th>Цена</th><th>Количество звезд</th><th>Описание</th><th>Выбрать это</th></tr></thead>');
+                    let head_hotels = $('<thead><tr><th>Название</th><th>Адрес</th><th>Цена</th><th>Количество звезд</th><th>Описание</th><th>Выбрать</th></tr></thead>');
                     let body_hotels = $('<tbody></tbody>');
                     head_hotels.appendTo(table_hotels);
-                    for (var route in points) {
-                        hotels = points[route]['hotels']
-                        alert(hotels)
-                        hotels.forEach(function (hotel) {
-                            let row = $('<tr></tr>');
-                            ['name', 'city', 'price', 'raiting', 'description'].forEach(function (key) {
-                                let td = $(`<td>${hotel[key]}</td>`);
-                                td.appendTo(row);
-                            });
-
-                            let checkbox = $('<input class="event-checkbox" type="checkbox">');
-                            checkbox.appendTo(row);
-
-                            let hotelId = $(`<td class="event-id" hidden="hidden">${hotel["id"]}</td>`);
-                            hotelId.appendTo(row);
-
-                            row.appendTo(body_hotels);
+                    hotels = point['hotels'];
+                    hotels.forEach(function (hotel) {
+                        let row = $('<tr></tr>');
+                        ['name', 'city', 'price', 'raiting', 'description'].forEach(function (key) {
+                            let td = $(`<td>${hotel[key]}</td>`);
+                            td.appendTo(row);
                         });
-                    }
+
+                        let checkbox = $(`<input class="hotel-checkbox" type="radio" name="hotel-radio-${point["cityId"]}" data-id="${hotel["hotelId"]}">`);
+                        checkbox.appendTo(row);
+
+                        row.appendTo(body_hotels);
+                    });
                     body_hotels.appendTo(table_hotels);
 
 
                     let table_transports = $('<table class="table"></table>');
-                    let head_transports = $('<thead><tr><th>Тип</th><th>Название</th><th>Дата прибытия</th><th>Дата отбытия</th><th>Цена</th><th>Выбрать это</th></tr></thead>');
+                    let head_transports = $('<thead><tr><th>Тип</th><th>Название</th><th>Дата прибытия</th><th>Дата отбытия</th><th>Цена</th><th>Выбрать</th></tr></thead>');
                     let body_transports = $('<tbody></tbody>');
                     head_transports.appendTo(table_transports);
-                    for (var route in points) {
-                        transports = points[route]['transport']
-                        transports.forEach(function (transport) {
-                            let row = $('<tr></tr>');
-                            ['transportType', 'name', 'departureTime', 'arriveTime', 'price'].forEach(function (key) {
-                                let td = $(`<td>${transport[key]}</td>`);
-                                td.appendTo(row);
-                            });
-
-                            let checkbox = $('<input class="event-checkbox" type="checkbox">');
-                            checkbox.appendTo(row);
-
-                            let transportId = $(`<td class="event-id" hidden="hidden">${transport["id"]}</td>`);
-                            transportId.appendTo(row);
-
-                            row.appendTo(body_transports);
+                    transports = point['transport'];
+                    transports.forEach(function (transport) {
+                        let row = $('<tr></tr>');
+                        ['transportType', 'name', 'departureTime', 'arriveTime', 'price'].forEach(function (key) {
+                            let td = $(`<td>${transport[key]}</td>`);
+                            td.appendTo(row);
                         });
-                    }
+
+                        let checkbox = $(`<input class="transport-checkbox" type="radio" name="transport-radio-${point["cityId"]}" data-id="${transport["transportId"]}">`);
+                        checkbox.appendTo(row);
+
+                        row.appendTo(body_transports);
+                    });
                     body_transports.appendTo(table_transports);
 
-                });
-                pointDiv.appendTo(routesDiv);
+                    $('<h4>Отели</h4>').appendTo(pointDiv);
+                    table_hotels.appendTo(pointDiv);
+                    $('<h4>Транспорт</h4>').appendTo(pointDiv);
+                    table_transports.appendTo(pointDiv);
+                    pointDiv.appendTo(routesDiv);
+                });   
                 $(`<hr><button type="button" class="btn btn-dark btn-lg" id="book-button">Забронировать</button>`).appendTo(routesDiv);
             }
         });
-    });
-
-    $("#modalWindow").off('hidden.bs.modal').on('hidden.bs.modal', function () {
-
     });
 })
