@@ -67,5 +67,7 @@ namespace TraWell.Controllers
             s = s.Substring(1, s.Length - 2);
             return Json(s, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult 
     }
 }
