@@ -74,7 +74,7 @@ namespace TraWell.Controllers
             req.Seek(0, SeekOrigin.Begin);
             string json = new StreamReader(req).ReadToEnd();
             string request = Requester.SendPOST("http://localhost:4044/api/cities/", json);
-            request = request.Replace("\\", "");
+            request = request.Replace("\\", ""); 
             request = request.Substring(1, request.Length - 2);
             return Json(request, JsonRequestBehavior.AllowGet);
 

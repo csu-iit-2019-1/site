@@ -176,7 +176,7 @@
         $('#modalWindow').modal('show');
         $(this).replaceWith($('<button type="button" class="btn btn-dark btn-lg" id="buy-button">Выкупить</button>'));
     }).on('click', '#buy-button', function () {
-        alert("a");
+        alert("a")
     });
 
     $("#add-point-button").on('click', function () {
@@ -222,16 +222,16 @@
             });
             point["events"] = events;
 
-            point["hotelStars"] = $(this).find('.hotel-stars').rateit('value');
-            point["minHotelCost"] = +$(this).find('.hotel-cost1').val();
-            point["maxHotelCost"] = +$(this).find('.hotel-cost2').val();
-            point["hotelBreakfast"] = $(this).find('.breakfast-checkbox').is(":checked");
-            point["hotelSeaNearby"] = $(this).find('.seaNearby-checkbox').is(":checked");
+            //point["hotelStars"] = $(this).find('.hotel-stars').rateit('value');
+            //point["minHotelCost"] = +$(this).find('.hotel-cost1').val();
+            //point["maxHotelCost"] = +$(this).find('.hotel-cost2').val();
+            //point["hotelBreakfast"] = $(this).find('.breakfast-checkbox').is(":checked");
+            //point["hotelSeaNearby"] = $(this).find('.seaNearby-checkbox').is(":checked");
 
-            point["transportType"] = +$(this).find('.transport-type-select').val();
-            point["minTransportCost"] = +$(this).find('.transport-cost1').val();
-            point["maxTransportCost"] = +$(this).find('.transport-cost2').val();
-            point["transportClass"] = +$(this).find('.transport-class-select').val();
+            //point["transportType"] = +$(this).find('.transport-type-select').val();
+            //point["minTransportCost"] = +$(this).find('.transport-cost1').val();
+            //point["maxTransportCost"] = +$(this).find('.transport-cost2').val();
+            //point["transportClass"] = +$(this).find('.transport-class-select').val();
 
             preRoute["points"].push(point);
         });
@@ -251,6 +251,9 @@
 
                 route.forEach(function (point) {
                     let pointDiv = $('<div class="route-point"></div>');
+                    let hotelDiv = $('<div class="field"><h3>Отели</h3></div>');
+                    let transportDiv = $('<div class="field"><h3>Как доехать</h3></div>');
+
                     $(`<hr>`).appendTo(pointDiv);
                     $(`<h3>${point["cityName"]}</h3>`).appendTo(pointDiv);
 
@@ -276,7 +279,6 @@
                     head_hotels.appendTo(table_hotels);
                     for (var route in points) {
                         hotels = points[route]['hotels']
-                        alert(hotels)
                         hotels.forEach(function (hotel) {
                             let row = $('<tr></tr>');
                             ['name', 'city', 'price', 'raiting', 'description'].forEach(function (key) {
@@ -294,6 +296,11 @@
                         });
                     }
                     body_hotels.appendTo(table_hotels);
+
+                    table_hotels.appendTo(hotelDiv);
+
+                    hotelDiv.appendTo(pointDiv)
+                   
 
 
                     let table_transports = $('<table class="table"></table>');
@@ -319,6 +326,9 @@
                         });
                     }
                     body_transports.appendTo(table_transports);
+
+                    table_transports.appendTo(transportDiv);
+                    transportDiv.appendTo(pointDiv);
 
 
                     $.ajax({
