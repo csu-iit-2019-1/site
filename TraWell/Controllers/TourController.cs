@@ -22,10 +22,11 @@ namespace TraWell.Controllers
             Stream req = Request.InputStream;
             req.Seek(0, System.IO.SeekOrigin.Begin);
             string json = new StreamReader(req).ReadToEnd();
-            var s = Requester.SendPOST("http://localhost:4044/api/booking/", json);
-            s = s.Replace("\\", "");
-            s = s.Substring(1, s.Length - 2);
-            return Json(s, JsonRequestBehavior.AllowGet);
+            var s = Requester.SendPostWaitStatus("http://localhost:4044/api/booking/", json);
+            var a = "";
+            if (s == 200) a = "ok";
+            else a = "bad";
+            return Json(a, JsonRequestBehavior.AllowGet);
         }
     }
 }

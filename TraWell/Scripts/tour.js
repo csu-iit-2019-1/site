@@ -87,11 +87,14 @@
             dataType: "json",
             data: JSON.stringify(bookingData),
             success: function (data) {
-                alert('Бронь прошла успешна.');
-                $("#book-button").replaceWith($('<button type="button" class="btn btn-dark" id="buy-button">Оплатить</button>'));
-                $("#buy-button").on('click', function () {
-                    //TODO: переход на кассу
-                });
+                if (data === "ok") {
+                    alert('Бронь прошла успешна.');
+                    $("#book-button").replaceWith($('<button type="button" class="btn btn-dark" id="buy-button">Оплатить</button>'));
+                    $("#buy-button").on('click', function () {
+                        //TODO: переход на кассу
+                    });
+                }
+                else alert('Возникла ошибка. Попробуйте позже.');
             }
         });
     });

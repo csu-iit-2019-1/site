@@ -41,17 +41,26 @@ namespace TraWell.Services
             }
         }
 
-        public static string SendDELETE(string Url)
+        public static int SendPostWaitStatus(string Url, string Data)
         {
-            System.Net.WebRequest req = System.Net.WebRequest.Create(Url);
-            req.Method = "DELETE";
+            System.Net.HttpWebRequest req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(Url);
+            req.Method = "POST";
             req.Timeout = 100000;
-            System.Net.WebResponse resp = req.GetResponse();
-            System.IO.Stream stream = resp.GetResponseStream();
-            System.IO.StreamReader sr = new System.IO.StreamReader(stream);
-            string Out = sr.ReadToEnd();
-            sr.Close();
-            return Out;
+            req.ContentType = "application/json; charset=utf-8";
+            byte[] sentData = Encoding.ASCII.GetBytes(Data);
+            req.ContentLength = sentData.Length;
+            try
+            {
+                System.IO.Stream sendStream = req.GetRequestStream();
+                sendStream.Write(sentData, 0, sentData.Length);
+                sendStream.Close();
+                System.Net.HttpWebResponse res = (System.Net.HttpWebResponse)req.GetResponse();
+                return (int)res.StatusCode;
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         public static string SendGET(string Url)
