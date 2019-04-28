@@ -262,17 +262,6 @@
                     //загружаем отели
                     //заглушка маршрутов
 
-                    function Route(name) {
-                        this.cityId = "5";
-                        this.hotels = [{ hotelId: "hotelId", hotelName: "hotelName", address: "address", price: "price", raiting: "raiting", description: "description" }];
-                        this.transport = [{ transportId: "transportId", transportType: "transportType", transportName: "transportName", departureTime: "departureTime", arriveTime: "arriveTime", price: "price" }];
-
-                    }
-                    route = new Route()
-                    route1 = new Route()
-                    var points = [route, route1]
-
-
                     let table_hotels = $('<table class="table"></table>');
                     let head_hotels = $('<thead><tr><th>Название</th><th>Адрес</th><th>Цена</th><th>Количество звезд</th><th>Описание</th><th>Выбрать это</th></tr></thead>');
                     let body_hotels = $('<tbody></tbody>');
