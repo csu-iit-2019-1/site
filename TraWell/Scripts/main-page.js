@@ -320,42 +320,49 @@
                     }
                     body_transports.appendTo(table_transports);
 
-                });
-                $.ajax({
-                    url: "/home/cities/",
-                    type: 'post',
-                    contentType: "json",
-                    dataType: "json",
-                    data: JSON.stringify({
-                        id: route['cityId'],
-                        startDate: route['departureTime'],
-                        endDate: route['arriveTime']
-                    }),
-                    success: function (eventsData) {
-                        let weather = JSON.parse(eventsData);
-                        let table = $('<table class="table"></table>');
-                        let head = $('<thead><tr><th>Название</th><th>Дата начала</th><th>Дата завершения</th><th>Описание</th><th>Цена</th><th>Адрес</th><th>Хочу посетить</th></tr></thead>');
-                        head.appendTo(table);
-                    
-                        let row = $('<tr></tr>');
-                        [' 'date', 'weather', 'temperature', 'wind speed'].forEach(function (key) {
-                            let td = $(`<td>${hotel[key]}</td>`);
-                            td.appendTo(row);
-                        });
 
+                    $.ajax({
+                        url: "/home/cities/",
+                        type: 'post',
+                        contentType: "json",
+                        dataType: "json",
+                        data: JSON.stringify({
+                            id: route['cityId'],
+                            startDate: route['departureTime'],
+                            endDate: route['arriveTime']
+                        }),
+                        success: function (eventsData) {
+                            let weathers = JSON.parse(eventsData);
+                            let table = $('<table class="table"></table>');
+                            let head = $('<thead><tr><th>Дата</th><th>Описание</th><th>Скорость ветра</th><th>Температура</th></thead>');
+                            head.appendTo(table);
 
-                        row.appendTo(body_hotels);
+                            let body = $('<tbody></tbody>');
+                            weathers.forEach(function (weather) {
+                                let row = $('<tr></tr>');
+                                ['dt_txt', 'description', 'wind_speed', 'Temp'].forEach(function (key) {
+                                    let td = $(`<td>${weather[key]}</td>`);
+                                    td.appendTo(row);
+                                });
+                                row.appendTo(body);
+                            });
+                            body.appendTo(table);
+
+                            let weatherDiv = $('<div class="field"><h3>Погода</h3></div>');
+                            table.appendTo(weatherDiv);
+                        }
+
                     });
-                        
-                        body_hotels.appendTo(table_hotels);
 
-                pointDiv.appendTo(routesDiv);
-                $(`<hr><button type="button" class="btn btn-dark btn-lg" id="book-button">Забронировать</button>`).appendTo(routesDiv);
+                    pointDiv.appendTo(routesDiv);
+                    $(`<hr><button type="button" class="btn btn-dark btn-lg" id="book-button">Забронировать</button>`).appendTo(routesDiv);
+                }
+       )
             }
         });
-    });
 
-    $("#modalWindow").off('hidden.bs.modal').on('hidden.bs.modal', function () {
+        $("#modalWindow").off('hidden.bs.modal').on('hidden.bs.modal', function () {
 
-    });
-})
+        });
+    })
+});
