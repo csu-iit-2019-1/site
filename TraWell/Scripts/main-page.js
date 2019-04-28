@@ -1,4 +1,4 @@
-﻿$(function () {
+$(function () {
     let chosenCitiesIds = [];
     $('#hotel-stars').rateit({ step: 1 });
 
@@ -225,16 +225,16 @@
             });
             point["events"] = events;
 
-            point["hotelStars"] = $(this).find('.hotel-stars').rateit('value');
+            //point["hotelStars"] = $(this).find('.hotel-stars').rateit('value');
             point["minHotelCost"] = +$(this).find('.hotel-cost1').val();
             point["maxHotelCost"] = +$(this).find('.hotel-cost2').val();
             point["hotelBreakfast"] = $(this).find('.breakfast-checkbox').is(":checked");
             point["hotelSeaNearby"] = $(this).find('.seaNearby-checkbox').is(":checked");
 
-            point["transportType"] = +$(this).find('.transport-type-select').val();
-            point["minTransportCost"] = +$(this).find('.transport-cost1').val();
-            point["maxTransportCost"] = +$(this).find('.transport-cost2').val();
-            point["transportClass"] = +$(this).find('.transport-class-select').val();
+            //point["transportType"] = +$(this).find('.transport-type-select').val();
+            //point["minTransportCost"] = +$(this).find('.transport-cost1').val();
+            //point["maxTransportCost"] = +$(this).find('.transport-cost2').val();
+            //point["transportClass"] = +$(this).find('.transport-class-select').val();
 
             preRoute["points"].push(point);
         });
@@ -300,12 +300,58 @@
                     });
                     body_transports.appendTo(table_transports);
 
+
+                     //заглушка погоды
+                    //function Weather(name) {
+                    //    this.Temp = "5";
+                    //    this.wind_speed = "456";
+                    //    this.dt_txt="45";
+                    //    this.description="it rains of dogs and cats";
+                    //}
+                    //weather = new Weather()
+                    //weather1 = new Weather()
+                    //var weathers = [weather, weather1]
+                    $.ajax({
+                        url: "/home/cities/",
+                        type: 'post',
+                        contenttype: "json",
+                        datatype: "json",
+                        data: json.stringify({
+                            id: route['cityid'],
+                            startdate: route['departuretime'],
+                            enddate: route['arrivetime']
+                        }),
+                        success: function (weatherData) {
+                            let weathers = JSON.parse(weatherData);
+                            let table_weather = $('<table class="table"></table>');
+                            let head_weather = $('<thead><tr><th>Дата</th><th>Описание</th><th>Скорость ветра</th><th>Температура</th></thead>');
+                            head_weather.appendTo(table_weather);
+
+                            let body = $('<tbody></tbody>');
+                            weathers.forEach(function (weather) {
+                                let row = $('<tr></tr>');
+                                ['dt_txt', 'description', 'wind_speed', 'Temp'].forEach(function (key) {
+                                    let td = $(`<td>${weather[key]}</td>`);
+                                    td.appendTo(row);
+                                });
+                                row.appendTo(body);
+                            });
+                            body.appendTo(table_weather);
+
+                        }
+
+                    });
+
+
                     $('<h4>Отели</h4>').appendTo(pointDiv);
                     table_hotels.appendTo(pointDiv);
                     $('<h4>Транспорт</h4>').appendTo(pointDiv);
                     table_transports.appendTo(pointDiv);
                     pointDiv.appendTo(routesDiv);
-                });   
+                    $('<h4>Погода</h4>').appendTo(pointDiv);
+                    table_weather.appendTo(pointDiv)
+
+                });
                 $(`<hr><button type="button" class="btn btn-dark btn-lg" id="book-button">Забронировать</button>`).appendTo(routesDiv);
             }
         });
