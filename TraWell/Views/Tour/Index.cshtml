@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Ваш маршрут</h2>
+
+@section Scripts {
+    @Scripts.Render("~/scripts/tour.js")
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
+    @Scripts.Render("~/scripts/bootstrap-select.min.js")
+    @Scripts.Render("~/scripts/jquery.rateit.min.js")
+    @Scripts.Render("~/scripts/bootstrap-datepicker.min.js")   
+}
+
+@Styles.Render("~/Content/rateit.css")
+@Styles.Render("~/Content/datepicker.css")
+@Styles.Render("~/Content/bootstrap-select.min.css")
+
+<div class="main-content">
+    @if (ViewBag.siteId != null)
+    {
+        <input id="userId" value="@ViewBag.siteId" hidden="hidden">
+    }
+
+    <div id="routes">
+
+    </div>
+
+    <button type="button" class="btn btn-dark" id="book-button">Подтвердить бронь</button>
+   
+</div>

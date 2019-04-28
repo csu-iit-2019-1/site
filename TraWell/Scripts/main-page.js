@@ -35,7 +35,7 @@ $(function () {
                     }
                 });
                 $cities.selectpicker('refresh');
-            });
+            });       
         }
     });
 
