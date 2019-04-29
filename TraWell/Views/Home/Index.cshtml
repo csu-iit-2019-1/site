@@ -65,13 +65,13 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label>Стоимость за ночь:</label>
-                    <input class="hotel-cost1 form-control" type="number" min=0 placeholder="Минимум">
+                    <input class="form-control" id="hotel-cost1" type="number" min=0 placeholder="Минимум">
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
                     <label> </label>
-                    <input class="hotel-cost2 form-control" type="number" min=0 placeholder="Максимум">
+                    <input class="form-control" id="hotel-cost2" type="number" min=0 placeholder="Максимум">
                 </div>
             </div>     
         </div>
@@ -85,13 +85,25 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label>Стоимость:</label>
-                    <input class="transport-cost1 form-control" type="number" min=0 placeholder="Минимум">
+                    <input class="form-control" id="transport-cost1 " type="number" min=0 placeholder="Минимум">
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
                     <label> </label>
-                    <input class="transport-cost2 form-control" type="number" min=0 placeholder="Максимум">
+                    <input class="form-control" id="transport-cost2" type="number" min=0 placeholder="Максимум">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label> </label>
+                    <select class="form-control" id="transport-class-select">
+                        <option value="1">Самолет</option>
+                        <option value="2">Поезд</option>
+                        <option value="3">Автобус</option>
+                        <option value="4">Корабль</option>
+                        <option value="5">Телепорт</option>
+                    </select>
                 </div>
             </div>
         </div>
