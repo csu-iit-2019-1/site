@@ -96,13 +96,11 @@
             </div>
             <div class="col-md-3">
                 <div class="form-group">
-                    <label> </label>
-                    <select class="form-control" id="transport-class-select">
-                        <option value="1">Самолет</option>
-                        <option value="2">Поезд</option>
-                        <option value="3">Автобус</option>
-                        <option value="4">Корабль</option>
-                        <option value="5">Телепорт</option>
+                    <label>Допустимые типы:</label>
+                    <select class="form-control selectpicker" id="transport-class-select" multiple data-selected-text-format="count>3">
+                        <option value="aircraft">Самолет</option>
+                        <option value="train">Поезд</option>
+                        <option value="bus">Автобус</option>
                     </select>
                 </div>
             </div>
