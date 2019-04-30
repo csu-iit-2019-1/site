@@ -10,6 +10,8 @@ namespace TraWell.Controllers
 {
     public class TourController : Controller
     {
+        private const string BOOKING_SERVICE_URL = "http://localhost:4044/api/booking/";
+
         // GET: Tour
         public ActionResult Index(int? siteId)
         {
@@ -22,11 +24,11 @@ namespace TraWell.Controllers
             Stream req = Request.InputStream;
             req.Seek(0, System.IO.SeekOrigin.Begin);
             string json = new StreamReader(req).ReadToEnd();
-            var s = Requester.SendPostWaitStatus("http://localhost:4044/api/booking/", json);
-            var a = "";
-            if (s == 200) a = "ok";
-            else a = "bad";
-            return Json(a, JsonRequestBehavior.AllowGet);
+            var response = Requester.SendPostWaitStatus(BOOKING_SERVICE_URL, json);
+            var result = "";
+            if (response == 200) result = "ok";
+            else result = "bad";
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
     }
 }

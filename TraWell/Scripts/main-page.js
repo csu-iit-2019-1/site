@@ -227,7 +227,6 @@
     });
 
     $("#get-route-button").on('click', function () {
-        //TODO: поправить соотвествие между общими и частными параметрами отелей и транспорта
         let preRoute = {};
         preRoute["cities_requirements"] = [];
 
@@ -329,14 +328,18 @@
                         let hotel_row = $(`<tr class="hotel-row" data-id="${hotel["id"]}"></tr>`);
                         $(`<th scope="row">${iterator}</th>`).appendTo(hotel_row);
                         $(`<td>${cities_options[+point["city_id"]].text}</td>`).appendTo(hotel_row);
-                        ['name', 'price', 'stars'].forEach(function (key) {
+                        ['name', 'price'].forEach(function (key) {
                             let td = $(`<td>${hotel[key]}</td>`);
                             td.appendTo(hotel_row);
                         });
-                        
-                        $(`<td><img src="${hotel["mainPhotoUrl"]}"  width="189" height="150" alt="lorem"></td>`).appendTo(hotel_row);
 
-                        //let checkbox = $(`<input class="hotel-checkbox" type="radio" name="hotel-radio-${point["cityId"]}" data-id="${hotel["hotelId"]}">`);
+                        let starsTd = $('<td></td>');
+                        let stars = $(`<div class="rateit" data-rateit-value="${hotel["stars"]}" data-rateit-ispreset="true" data-rateit-readonly="true"></div>`);
+                        stars.rateit({});
+                        stars.appendTo(starsTd);
+                        starsTd.appendTo(hotel_row);
+
+                        $(`<td><img src="${hotel["mainPhotoUrl"]}"  width="189" height="150" alt="lorem"></td>`).appendTo(hotel_row);
 
                         hotel_row.appendTo(body_hotels);
 

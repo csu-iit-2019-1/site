@@ -11,6 +11,10 @@ namespace TraWell.Controllers
 {
     public class HomeController : Controller
     {
+        private const string CITY_SERVICE_URL = "http://localhost:4044/api/city/";
+        private const string EVENTS_SERVICE_URL = "http://localhost:4044/api/events/";
+        private const string ROUTES_SERVICE_URL = "http://localhost:4044/api/routes/";
+
         public ActionResult Index()
         {
             return View();
@@ -32,18 +36,14 @@ namespace TraWell.Controllers
 
         public JsonResult CitiesList()
         {
-            var s = Requester.SendGET("http://localhost:4044/api/city/");
-            s = s.Replace("\\", "");
-            s = s.Substring(1, s.Length - 2);
-            return Json(s, JsonRequestBehavior.AllowGet);
+            var response = cutResponse(Requester.SendGET(CITY_SERVICE_URL));
+            return Json(response, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult CityInfo(int id)
         {
-            var s = Requester.SendGET("http://localhost:4044/api/city/"+id);
-            s = s.Replace("\\", "");
-            s = s.Substring(1, s.Length - 2);
-            return Json(s, JsonRequestBehavior.AllowGet);
+            var response = cutResponse(Requester.SendGET(CITY_SERVICE_URL + id));
+            return Json(response, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult CityEvents()
@@ -51,10 +51,8 @@ namespace TraWell.Controllers
             Stream req = Request.InputStream;
             req.Seek(0, System.IO.SeekOrigin.Begin);
             string json = new StreamReader(req).ReadToEnd();
-            var s = Requester.SendPOST("http://localhost:4044/api/events/", json);
-            s = s.Replace("\\", "");
-            s = s.Substring(1, s.Length - 2);
-            return Json(s, JsonRequestBehavior.AllowGet);
+            var response = cutResponse(Requester.SendPOST(EVENTS_SERVICE_URL, json));
+            return Json(response, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult Routing()
@@ -62,10 +60,8 @@ namespace TraWell.Controllers
             Stream req = Request.InputStream;
             req.Seek(0, System.IO.SeekOrigin.Begin);
             string json = new StreamReader(req).ReadToEnd();
-            var s = Requester.SendPOST("http://localhost:4044/api/routes/", json);
-            s = s.Replace("\\", "");
-            s = s.Substring(1, s.Length - 2);
-            return Json(s, JsonRequestBehavior.AllowGet);
+            var response = cutResponse(Requester.SendPOST(ROUTES_SERVICE_URL, json));
+            return Json(response, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult Weather()
@@ -73,11 +69,16 @@ namespace TraWell.Controllers
             Stream req = Request.InputStream;
             req.Seek(0, SeekOrigin.Begin);
             string json = new StreamReader(req).ReadToEnd();
-            string request = Requester.SendPOST("http://localhost:4044/api/city/", json);
-            request = request.Replace("\\", ""); 
-            request = request.Substring(1, request.Length - 2);
-            return Json(request, JsonRequestBehavior.AllowGet);
+            var response = cutResponse(Requester.SendPOST(CITY_SERVICE_URL, json));
+            return Json(response, JsonRequestBehavior.AllowGet);
 
+        }
+
+        private string cutResponse(string response)
+        {
+            response = response.Replace("\\", "");
+            response = response.Substring(1, response.Length - 2);
+            return response;
         }
     }
 }

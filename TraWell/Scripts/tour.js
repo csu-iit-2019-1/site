@@ -13,6 +13,7 @@
             return;
         }
 
+        bookingData["PersonId"] = +$('#userId').val();
         //alert(bookingData);
 
         $.ajax({
@@ -25,12 +26,13 @@
                 if (data === "ok") {
                     alert('Бронь прошла успешна.');
                     $("#book-button").replaceWith($('<button type="button" class="btn btn-dark" id="buy-button">Оплатить</button>'));
-                    $("#buy-button").on('click', function () {
-                        //TODO: переход на кассу
-                    });
                 }
                 else alert('Возникла ошибка. Попробуйте позже.');
             }
         });
+    });
+
+    $('#main-content').on('click', 'buy-button', function () {
+        //TODO: переход на кассу
     });
 });
