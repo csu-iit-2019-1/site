@@ -14,6 +14,7 @@
         }
 
         bookingData["PersonId"] = +$('#userId').val();
+        localStorage.setItem("chosen-route", bookingData);
         //alert(bookingData);
 
         $.ajax({
@@ -23,16 +24,18 @@
             dataType: "json",
             data: bookingData,
             success: function (data) {
-                if (data === "ok") {
+                if (data !== "") {
                     alert('Бронь прошла успешна.');
-                    $("#book-button").replaceWith($('<button type="button" class="btn btn-dark" id="buy-button">Оплатить</button>'));
+                    $("#book-button").replaceWith($('<button type="button" class="btn btn-dark btn-lg" id="buy-button">Оплатить</button>'));
+                    $("#buy-button").on('click', function () {
+                        //TODO: переход на кассу
+                        location.href = `http://iitcashbox.eastus.cloudapp.azure.com/pay?orderNumber=${data}&returnUrl=http://localhost:24052/tour?siteId=${+$('#userId').val()}&orderSum=${"500"}`;
+                    });
                 }
                 else alert('Возникла ошибка. Попробуйте позже.');
             }
         });
     });
 
-    $('#main-content').on('click', 'buy-button', function () {
-        //TODO: переход на кассу
-    });
+    
 });

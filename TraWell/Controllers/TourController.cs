@@ -10,12 +10,17 @@ namespace TraWell.Controllers
 {
     public class TourController : Controller
     {
-        private const string BOOKING_SERVICE_URL = "http://localhost:4044/api/booking/";
+        private const string BOOKING_SERVICE_URL = "https://csubookingservice.azurewebsites.net/";
 
         // GET: Tour
-        public ActionResult Index(int? siteId)
+        public ActionResult Index(int siteId, string checkNumber)
         {
-            if (siteId != null) ViewBag.siteId = siteId;
+            ViewBag.siteId = siteId;
+            if (checkNumber != null && checkNumber != "")
+            {
+                var response = Requester.SendGetWaitStatus(BOOKING_SERVICE_URL + "buying/"+siteId);
+                if (response == 200) ViewBag.isPayed = true;
+            }
             return View();
         }
 
@@ -24,11 +29,8 @@ namespace TraWell.Controllers
             Stream req = Request.InputStream;
             req.Seek(0, System.IO.SeekOrigin.Begin);
             string json = new StreamReader(req).ReadToEnd();
-            var response = Requester.SendPostWaitStatus(BOOKING_SERVICE_URL, json);
-            var result = "";
-            if (response == 200) result = "ok";
-            else result = "bad";
-            return Json(result, JsonRequestBehavior.AllowGet);
+            var response = Requester.SendPOST(BOOKING_SERVICE_URL + "booking/route", json);
+            return Json(response, JsonRequestBehavior.AllowGet);
         }
     }
 }

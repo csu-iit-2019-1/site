@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using TraWell.Models;
@@ -11,8 +12,8 @@ namespace TraWell.Controllers
 {
     public class HomeController : Controller
     {
-        private const string CITY_SERVICE_URL = "http://localhost:4044/api/city/";
-        private const string EVENTS_SERVICE_URL = "http://localhost:4044/api/events/";
+        private const string CITY_SERVICE_URL = "https://apicities20190502035621.azurewebsites.net/api/cities/";
+        private const string EVENTS_SERVICE_URL = "https://iitevents.herokuapp.com/events/";
         private const string ROUTES_SERVICE_URL = "http://localhost:4044/api/routes/";
 
         public ActionResult Index()
@@ -36,13 +37,15 @@ namespace TraWell.Controllers
 
         public JsonResult CitiesList()
         {
-            var response = cutResponse(Requester.SendGET(CITY_SERVICE_URL));
+            var response = cutResponse(Requester.SendGET(CITY_SERVICE_URL + "getless"));
             return Json(response, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult CityInfo(int id)
         {
-            var response = cutResponse(Requester.SendGET(CITY_SERVICE_URL + id));
+            var response = Requester.SendGET(CITY_SERVICE_URL + id);
+            response = response.Replace("\"", "");
+            response = response.Replace("'", "\"");         
             return Json(response, JsonRequestBehavior.AllowGet);
         }
 
@@ -51,7 +54,7 @@ namespace TraWell.Controllers
             Stream req = Request.InputStream;
             req.Seek(0, System.IO.SeekOrigin.Begin);
             string json = new StreamReader(req).ReadToEnd();
-            var response = cutResponse(Requester.SendPOST(EVENTS_SERVICE_URL, json));
+            var response = Requester.SendPOST(EVENTS_SERVICE_URL + "getEvents", json);
             return Json(response, JsonRequestBehavior.AllowGet);
         }
 
@@ -80,5 +83,14 @@ namespace TraWell.Controllers
             response = response.Substring(1, response.Length - 2);
             return response;
         }
+
+        //private string Convert(string response)
+        //{
+        //    var r2 = Encoding.UTF8.GetString( response, 0, raw_response.Length);
+        //    if (r2[0] == '\uFEFF')
+        //    {
+        //        r2 = r2.Substring(1);
+        //    }
+        //}
     }
 }

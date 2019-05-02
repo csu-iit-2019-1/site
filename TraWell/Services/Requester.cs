@@ -26,6 +26,7 @@ namespace TraWell.Services
                 System.IO.StreamReader sr = new System.IO.StreamReader(ReceiveStream, Encoding.UTF8);
                 Char[] read = new Char[256];
                 int count = sr.Read(read, 0, 256);
+
                 string Out = String.Empty;
                 while (count > 0)
                 {
@@ -77,6 +78,24 @@ namespace TraWell.Services
             catch
             {
                 return "";
+            }
+        }
+
+        public static int SendGetWaitStatus(string Url)
+        {
+            System.Net.HttpWebRequest req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(Url);
+            req.Method = "GET";
+            req.Timeout = 100000;
+            try
+            {
+                System.IO.Stream sendStream = req.GetRequestStream();
+                sendStream.Close();
+                System.Net.HttpWebResponse res = (System.Net.HttpWebResponse)req.GetResponse();
+                return (int)res.StatusCode;
+            }
+            catch
+            {
+                return 0;
             }
         }
     }

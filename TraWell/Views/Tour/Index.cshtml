@@ -27,6 +27,15 @@
 
     </div>
 
-    <button type="button" class="btn btn-dark btn-lg" id="book-button">Подтвердить бронь</button>
+    @if (ViewBag.isPayed != null && ViewBag.isPayed)
+    {
+        <h2>Оплачено</h2>
+    }
+    else
+    {
+        <button type="button" class="btn btn-dark btn-lg" id="book-button">Подтвердить бронь</button>
+    }
+
+    
    
 </div>

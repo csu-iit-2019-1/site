@@ -42,10 +42,23 @@
                 <input type="text" class="form-control second-date general-date" value="" id="general-arrival-day" />
             </div>
         </div>
-        <div class="col-md-3">
+        @*<div class="col-md-3">
             <div class="form-group">
                 <label>Дней в путешествии:</label>
                 <input class="form-control days-in" type="number" min="0" step="1" value="" id="total-days-of-voyage" />
+            </div>
+        </div>*@
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Город отправления: </label>
+                <select id="departure-city" class="city city-picker" data-live-search="true">
+                    <option value="0">Город</option>
+                </select>
             </div>
         </div>
     </div>
@@ -55,12 +68,12 @@
 
     <div class="row">  
         <div class="col-md-3">
-            <label>Количество звезд:  </label>
+            <label>Минимальное количество звезд:  </label>
             <div class="rateit hotel-stars" id="hotel-stars" data-rateit-resetable="false"></div>
         </div>
     </div>
 
-    <div class="row">
+    @*<div class="row">
         <div>      
             <div class="col-md-3">
                 <div class="form-group">
@@ -75,14 +88,14 @@
                 </div>
             </div>     
         </div>
-    </div>
+    </div>*@
 
     <hr>
 
     <h3>Общие параметры транспорта</h3>
     <div class="row">
         <div>
-            <div class="col-md-3">
+            @*<div class="col-md-3">
                 <div class="form-group">
                     <label>Стоимость:</label>
                     <input class="form-control" id="transport-cost1 " type="number" min=0 placeholder="Минимум">
@@ -93,7 +106,7 @@
                     <label> </label>
                     <input class="form-control" id="transport-cost2" type="number" min=0 placeholder="Максимум">
                 </div>
-            </div>
+            </div>*@
             <div class="col-md-3">
                 <div class="form-group">
                     <label>Допустимые типы:</label>
@@ -109,23 +122,13 @@
     </div>
 
     <hr>
-
-    <div class="row"> 
-        <div class="col-md-3">
-            <div class="form-group">
-                <label>Город отправления: </label>
-                <select id="departure-city" class="city city-picker" data-live-search="true">
-                    <option value="0">Город</option>
-                </select>
-            </div>
-        </div>
-    </div>
+    <h3>Выберите города, которые хотите посетить</h3>
 
     <div id="fields-of-fields">
         <hr>
         <div class="point-fields">
             <label class="field city-label">
-                Выбрать город: 
+                Добавить город: 
                 <select class="city city-picker" id="city-picker" data-live-search="true">
                 <option value="0">Город</option>
                 </select>

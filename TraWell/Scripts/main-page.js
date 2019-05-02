@@ -7,10 +7,7 @@
 
     $('.general-date').each(function () {
         $(this).datepicker({
-            format: 'yyyy-mm-dd',
-            onRender: function (date) {
-                return date.valueOf() < now.valueOf() ? 'disabled' : '';
-            }
+            format: 'yyyy-mm-dd'
         }).on('changeDate', function (ev) {
             $(this).data('datepicker').hide();
         }).data('datepicker')
@@ -30,7 +27,7 @@
                 let options = $("option", $cities).get();         
                 cities.forEach(city => {
                     if (!options.find(option => +option.value === city.CityId)) {
-                        $cities.append(`<option value="${city.CityId}" data-subtext="${city.Ctr_Name}">${city.Name}</option>`);
+                        $cities.append(`<option value="${city.CityId}" data-subtext="${city.Country}">${city.CityName}</option>`);
                     }
                 });
                 $cities.selectpicker('refresh');
@@ -47,27 +44,18 @@
             type: 'get',
             dataType: "json",
             success: function (data) {
-                let cityInfo = JSON.parse(data);
+                alert(data);
+                let cityInfo = JSON.parse(data.toString('utf8'));
                 let point = currentCityPicker.closest('.point-fields');
                 let pointHr = point.find('hr');
                 point.children().not('.city-label, hr').remove();
 
-                let header = $(`<div class="field"><h1>${cityInfo.Name}</h1></div>`);
+                let header = $(`<div class="field"><h1>${cityInfo.CityName}</h1></div>`);
                 header.insertBefore(pointHr);
 
                 let description = $(`<div class="field"><p>${cityInfo.Description}</p></div>`);
                 description.insertBefore(pointHr);
 
-                //заглушка погоды
-                //function Weather(name) {
-                //    this.Temp = "5";
-                //    this.wind_speed = "456";
-                //    this.dt_txt="45";
-                //    this.description="it rains of dogs and cats";
-                //}
-                //weather = new Weather()
-                //weather1 = new Weather()
-                //var weathers = [weather, weather1]
                 $.ajax({
                     url: "/home/weather/",
                     type: 'post',
@@ -75,8 +63,8 @@
                     datatype: "json",
                     data: JSON.stringify({
                         id: cityInfo.CityId,
-                        startdate: $('#general-departure-day').val(),
-                        enddate: $('#general-arrival-day').val()
+                        startDate: $('#general-departure-day').val(),
+                        endDate: $('#general-arrival-day').val()
                     }),
                     success: function (weatherData) {
                         let weathers = JSON.parse(weatherData);
@@ -94,12 +82,12 @@
                             row.appendTo(body);
                         });
                         body.appendTo(table_weather);
-                        $('<h4>Погода</h4>').insertBefore(pointHr);
-                        table_weather.insertBefore(pointHr);
+                        table_weather.insertAfter(description);
+                        $('<h3>Погода</h3>').insertAfter(description);
                     }
 
                 });
-
+                $('<h3>Укажите параметры</h3>').insertBefore(pointHr);
                 let purposes = $('<select class="form-control purpose-select"></select>');
                 purposes.append($(`<option value="">Цель визита</option>`));
                 cityInfo["Goals"].forEach(function (purpose) {
@@ -113,7 +101,7 @@
                 dates.find('.days-in').attr('id', null).val("").closest('div').find('label').text("Дней в городе");
                 dates.find(".general-date").each(function () {
                     $(this).attr('id', null).datepicker({
-                        format: 'dd-mm-yyyy',
+                        format: 'yyyy-mm-dd',
                         onRender: function (date) {
                             return date.valueOf() < now.valueOf() ? 'disabled' : '';
                         }
@@ -124,6 +112,17 @@
                 });
                 dates.insertBefore(pointHr);
 
+                let hotelFields = $('<div class="field"></div>');
+                $('<h3>Параметры отеля</h3>').appendTo(hotelFields);
+
+                let breakfastIncluded = $('<div><label>Завтрак: <input class="breakfast-checkbox" type="checkbox"></div>');
+                breakfastIncluded.appendTo(hotelFields);
+
+                let seaNearby = $('<div><label>Близко к морю: <input class="seaNearby-checkbox" type="checkbox"></div>');
+                seaNearby.appendTo(hotelFields);
+
+                hotelFields.insertBefore(pointHr);
+
                 //загружаем мероприятия
                 $.ajax({
                     url: "/home/cityevents/",
@@ -131,12 +130,13 @@
                     contentType: "json",
                     dataType: "json",
                     data: JSON.stringify({
-                        city: currentCityPicker.closest('.point-fields').find('.city').find('select').val(),
+                        cityId: currentCityPicker.closest('.point-fields').find('.city').find('select').val(),
                         startDate: $('#general-departure-day').val(),
                         endDate: $('#general-arrival-day').val(),
                     }),
                     success: function (eventsData) {
-                        let events = JSON.parse(eventsData);
+                        //alert(eventsData.toString('utf8'));
+                        let events = JSON.parse(eventsData.toString('utf8'));
                         let table = $('<table class="table"></table>');
                         let head = $('<thead><tr><th>Название</th><th>Дата начала</th><th>Дата завершения</th><th>Описание</th><th>Цена</th><th>Места</th><th>Хочу посетить</th></tr></thead>');
                         head.appendTo(table);
@@ -164,21 +164,6 @@
                         eventDiv.insertBefore(pointHr);
                     }
                 });
-                //--
-
-                setTimeout(function () {
-                    let hotelFields = $('<div class="field"></div>');
-                    $('<h3>Параметры отеля</h3>').appendTo(hotelFields);
-
-                    let breakfastIncluded = $('<div><label>Завтрак: <input class="breakfast-checkbox" type="checkbox"></div>');
-                    breakfastIncluded.appendTo(hotelFields);
-
-                    let seaNearby = $('<div><label>Близко к морю: <input class="seaNearby-checkbox" type="checkbox"></div>');
-                    seaNearby.appendTo(hotelFields);
-
-                    hotelFields.insertBefore(pointHr);
-
-                }, 200);
             }
         })
     }).on('click', '.book-button', function () {
@@ -187,7 +172,7 @@
         saveData["CountOfPersonsAdults"] = +$('#adults-amount').val();
         saveData["CountOfPersonsChildren"] = +$('#children-amount').val();
         saveData["Hotels"] = [];
-        saveData["Transport"] = [];
+        saveData["Transports"] = [];
         saveData["Events"] = [];
         
         $(this).closest('.route-div').find('tr.hotel-row').each(function () {
@@ -198,7 +183,7 @@
         });
         $(this).closest('.route-div').find('tr.transport-row').each(function () {
             let tr = { "TransportId": +$(this).attr('data-id') }
-            saveData["Transport"].push(tr);
+            saveData["Transports"].push(tr);
         });
         $(this).closest('.route-div').find('tr.event-row').each(function () {
             let ev = { "EventId": +$(this).attr('data-id') }
@@ -215,7 +200,7 @@
 
     $("#add-point-button").on('click', function () {
         let pointFields = $('<div class="point-fields"></div>');
-        let label = $('<label class="field city-label">Выбрать город: </label>');
+        let label = $('<label class="field city-label">Добавить город: </label>');
         let citypicker = $('#city-picker').clone();
         citypicker.attr("id", null);
         citypicker.val("0");
@@ -230,23 +215,23 @@
         let preRoute = {};
         preRoute["cities_requirements"] = [];
 
-        preRoute["adults_mount"] = +$('#adults-amount').val();
-        preRoute["children_amount"] = +$('#children-amount').val();
+        //preRoute["adults_mount"] = +$('#adults-amount').val();
+        //preRoute["children_amount"] = +$('#children-amount').val();
         preRoute["person_amount"] = +$('#children-amount').val() + +$('#adults-amount').val();
 
         preRoute["start_date"] = $('#general-departure-day').val() + "T00:00:00Z";
         preRoute["end_date"] = $('#general-arrival-day').val() + "T00:00:00Z";
-        preRoute["total_days_of_voyage"] = +$('#total-days-of-voyage').val();
+        //preRoute["total_days_of_voyage"] = +$('#total-days-of-voyage').val();
 
         preRoute["departure_city_id"] = +$('#departure-city').val();
 
         preRoute["min_hotel_stars"] = +$('#hotel-stars').rateit('value');
-        preRoute["min_hotel_cost"] = +$('#hotel-cost1').val();
-        preRoute["max_hotel_cost"] = +$('#hotel-cost2').val();
+        //preRoute["min_hotel_cost"] = +$('#hotel-cost1').val();
+        //preRoute["max_hotel_cost"] = +$('#hotel-cost2').val();
 
-        preRoute["min_transport_cost"] = +$('#transport-cost1').val();
-        preRoute["max_transport_cost"] = +$('#transport-cost2').val();
-        preRoute["transport_types_id"] = +$('#transport-type-select').val();
+        //preRoute["min_transport_cost"] = +$('#transport-cost1').val();
+        //preRoute["max_transport_cost"] = +$('#transport-cost2').val();
+        preRoute["transport_types_id"] = $('#transport-class-select').val();
 
         $('.point-fields').each(function () {
             let point = {};
@@ -270,7 +255,7 @@
             preRoute["cities_requirements"].push(point);
         });
 
-        //alert(JSON.stringify(preRoute));
+        alert(JSON.stringify(preRoute));
 
         $.ajax({
             url: "/home/routing/",
@@ -347,9 +332,9 @@
 
                         let transport = point['transport'];
 
-                        let transport_row = $(`<tr class="transport-row" data-id="${transport["transportId"]}"></tr>`);
+                        let transport_row = $(`<tr class="transport-row" data-id="${transport["transport_id"]}"></tr>`);
                         $(`<th scope="row">${iterator}</th>`).appendTo(transport_row);
-                        ['transportType', 'name', 'departureTime', 'arriveTime', 'price'].forEach(function (key) {
+                        ['transport_type', 'name', 'departure_time', 'arrive_time', 'price'].forEach(function (key) {
                             let td = $(`<td>${transport[key]}</td>`);
                             td.appendTo(transport_row);
                         });
@@ -375,6 +360,7 @@
 
                         iterator++;
                     });
+                    $(`<h3>Общая стоимость маршрута: ${+route["total_price"]}</h3>`).appendTo(routeDiv);
                     $(`<hr><button type="button" class="btn btn-dark btn-lg book-button">Забронировать</button>`).appendTo(routeDiv);
                     routeDiv.appendTo(routesDiv);
                     route_iterator++;
